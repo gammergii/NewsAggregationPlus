@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>NewsAggregationLite</title>
+  <meta name="description" content="Dark dashboard for local weather, US news, Reddit popular, and AI news."/>
+  <link rel="stylesheet" href="style.css"/>
+
+<!-- Google AdSense Dummy Code -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-xxxxxxxxxxxxxxxx",
+          enable_page_level_ads: true
+     });
+</script>
+
+</head>
+<body>
+<header class="app-header">
+  <h1>NewsAggregationLite</h1>
+  <div class="controls">
+    <button id="unitToggle" title="Toggle °F/°C">°F</button>
+    <span id="lastUpdated" class="dim"></span>
+  </div>
+</header>
+
+<main class="grid">
+  <section id="weather" class="card">
+    <div class="card-header"><h2>Local Weather</h2><span id="weatherLocation" class="dim"></span></div>
+    <div class="weather-content">
+      <div class="temp"><span id="currentTemp">--</span>°</div>
+      <div class="hi-lo"><span>H: <span id="highTemp">--</span>°</span><span>L: <span id="lowTemp">--</span>°</span></div>
+      <div id="weatherSummary" class="summary dim">Loading...</div>
+    </div>
+  </section>
+
+  <section id="localNews" class="card">
+    <div class="card-header"><h2>U.S. News</h2><span class="dim">United States</span></div>
+    <ul id="localNewsList" class="list"></ul>
+  </section>
+
+  <section id="reddit" class="card">
+    <div class="card-header"><h2>Reddit — r/popular</h2><a class="dim" href="https://www.reddit.com/r/popular/" target="_blank" rel="noopener">Open</a></div>
+    <ul id="redditList" class="list reddit"></ul>
+  </section>
+
+  <section id="aiNews" class="card">
+    <div class="card-header"><h2>AI Developments (Last 30 Days)</h2></div>
+    <ul id="aiList" class="list ai"></ul>
+  </section>
+</main>
+
+<footer class="footer dim">
+  <p>Weather by Open-Meteo. RSS via Vercel API route proxy. Reddit via JSON.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
