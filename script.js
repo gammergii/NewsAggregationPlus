@@ -1,95 +1,159 @@
-// Vercel build — uses /api/rss proxy
-const DEFAULT={city:"Lubbock",region:"Texas",lat:33.5779,lon:-101.8552};
-const STATE={unit:"F",place:{...DEFAULT},weatherC:null};
-const els={unitToggle:document.getElementById('unitToggle'),lastUpdated:document.getElementById('lastUpdated'),
-weatherLocation:document.getElementById('weatherLocation'),currentTemp:document.getElementById('currentTemp'),
-highTemp:document.getElementById('highTemp'),lowTemp:document.getElementById('lowTemp'),weatherSummary:document.getElementById('weatherSummary'),
-localNewsList:document.getElementById('localNewsList'),redditList:document.getElementById('redditList'),aiList:document.getElementById('aiList')};
+// helpers
+const $ = (s, r=document)=>r.querySelector(s);
+const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+const fmtTime = d => new Date(d).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+const setUpdated = () => $('#lastUpdated').textContent = 'Updated ' + fmtTime(Date.now());
 
-function cToF(c){return(c*9/5)+32;}
-function formatTemp(v){if(v==null||Number.isNaN(v))return"--";return Math.round(STATE.unit==="F"?cToF(v):v);}
-function setUpdated(){if(els.lastUpdated) els.lastUpdated.textContent="Updated "+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
-function faviconFor(url){try{const u=new URL(url);return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=32`;}catch{return"";}}
-function escapeHtml(s){return s?.replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))||'';}
+// unit toggle
+let unit = (localStorage.getItem('unit')||'F');
+const toggle = $('#unitToggle');
+toggle.textContent = unit === 'F' ? '°F' : '°C';
+toggle.addEventListener('click', ()=>{
+  unit = unit === 'F' ? 'C' : 'F';
+  localStorage.setItem('unit', unit);
+  toggle.textContent = unit === 'F' ? '°F' : '°C';
+  fetchWeather();
+});
 
-// Weather
-async function loadWeather(){
-  const {lat,lon}=STATE.place;
-  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1&temperature_unit=celsius`;
-  const data=await fetch(url).then(r=>r.json());
-  STATE.weatherC={current:data?.current_weather?.temperature,high:data?.daily?.temperature_2m_max?.[0],low:data?.daily?.temperature_2m_min?.[0]};
-  document.getElementById('weatherLocation').textContent=`${STATE.place.city}, ${STATE.place.region}`;
-  document.getElementById('weatherSummary').textContent=data?.current_weather?`Winds ${Math.round(data.current_weather.windspeed)} ${data.hourly_units?.windspeed_10m||'km/h'}`:"—";
-  renderWeather();
-}
-function renderWeather(){ if(!STATE.weatherC)return; els.currentTemp.textContent=formatTemp(STATE.weatherC.current); els.highTemp.textContent=formatTemp(STATE.weatherC.high); els.lowTemp.textContent=formatTemp(STATE.weatherC.low); }
-
-// RSS via Vercel API route
-async function fetchRSS(feedUrl){
-  const prox=`/api/rss?url=${encodeURIComponent(feedUrl)}`;
-  const xml=await fetch(prox).then(r=>{ if(!r.ok) throw new Error('RSS proxy failed'); return r.text(); });
-  const doc=new DOMParser().parseFromString(xml,"text/xml");
-  if(doc.querySelector('parsererror')) throw new Error('Bad XML');
-  const items=[...doc.querySelectorAll('item')].map(it=>{
-    const link=it.querySelector('link')?.textContent?.trim()||'';
-    const title=it.querySelector('title')?.textContent?.trim()||'';
-    const pubDate=it.querySelector('pubDate')?.textContent?.trim()||'';
-    return {title,link,pubDate};
-  });
-  return items;
-}
-
-// U.S. News
-async function loadUSNews(){
-  const feed=`https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en`;
+// weather (Open-Meteo)
+async function fetchWeather(){
   try{
-    const items=await fetchRSS(feed);
-    localNewsList.innerHTML=items.slice(0,10).map(i=>{
-      const fav=faviconFor(i.link);
-      const host=(()=>{ try{return new URL(i.link).hostname.replace('www.','');}catch{return '';} })();
-      const when=i.pubDate?new Date(i.pubDate).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
-      return `<li class="item"><img class="favicon" src="${fav}" alt=""/><div><a href="${i.link}" target="_blank" rel="noopener">${escapeHtml(i.title)}</a><div class="meta">${host}${when?" • "+when:""}</div></div></li>`;
-    }).join('');
-  }catch{ localNewsList.innerHTML = '<li class="dim">Error loading feed.</li>'; }
+    let lat=33.5779, lon=-101.8552; // default Lubbock
+    if (navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(p => { lat=p.coords.latitude; lon=p.coords.longitude; go(); }, go);
+    } else go();
+    function go(){
+      const params = new URLSearchParams({
+        latitude: lat, longitude: lon,
+        current_weather: true, daily: 'temperature_2m_max,temperature_2m_min,weathercode',
+        timezone: 'auto', temperature_unit: unit === 'F' ? 'fahrenheit' : 'celsius', windspeed_unit: 'mph'
+      });
+      fetch(`https://api.open-meteo.com/v1/forecast?${params}`)
+        .then(r=>r.json()).then(d=>{
+          $('#weatherLocation').textContent = 'Your area';
+          $('#currentTemp').textContent = Math.round(d.current_weather.temperature);
+          $('#highTemp').textContent = Math.round(d.daily.temperature_2m_max[0]);
+          $('#lowTemp').textContent = Math.round(d.daily.temperature_2m_min[0]);
+          $('#weatherSummary').textContent = `Winds ${Math.round(d.current_weather.windspeed)} ${unit==='F'?'mph':'km/h'}`;
+          setUpdated();
+        }).catch(()=>{$('#weatherSummary').textContent='Error loading weather.'});
+    }
+  }catch(e){ console.error(e); }
+}
+
+// RSS proxy
+const rss = url => fetch(`/api/rss?url=${encodeURIComponent(url)}`).then(r=>r.text())
+  .then(str => (new window.DOMParser()).parseFromString(str, 'text/xml'));
+
+// US news
+async function loadUSNews(){
+  const xml = await rss('https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en');
+  const items = [...xml.querySelectorAll('item')].slice(0,12);
+  const ul = $('#usNewsList'); ul.innerHTML='';
+  items.forEach(it=>{
+    const title = it.querySelector('title')?.textContent||'';
+    const link = it.querySelector('link')?.textContent||'#';
+    const src = (it.querySelector('source')?.textContent || new URL(link).hostname.replace('www.',''));
+    const date = new Date(it.querySelector('pubDate')?.textContent||Date.now()).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="${link}" target="_blank" rel="noopener">${title}</a><span class="dim">${src} • ${date}</span>`;
+    ul.appendChild(li);
+  });
+}
+
+// TikTok trending via RSSHub (keyless)
+async function loadTikTok(){
+  try{
+    const xml = await rss('https://rsshub.app/tiktok/trending');
+    const items = [...xml.querySelectorAll('item')].slice(0,10);
+    const ul = $('#tiktokList'); ul.innerHTML='';
+    items.forEach(it=>{
+      const title = it.querySelector('title')?.textContent || 'Trending';
+      const link = it.querySelector('link')?.textContent || '#';
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${link}" target="_blank" rel="noopener">${title}</a>`;
+      ul.appendChild(li);
+    });
+  }catch(e){
+    $('#tiktokList').innerHTML = '<li class="dim">Issue fetching TikTok. Try again later.</li>';
+  }
 }
 
 // Reddit
 async function loadReddit(){
   try{
-    const data=await fetch('https://www.reddit.com/r/popular.json?limit=20').then(r=>r.json());
-    const posts=(data?.data?.children||[]).map(x=>x.data);
-    redditList.innerHTML=posts.slice(0,12).map(p=>`<li>• <a href="https://www.reddit.com${p.permalink}" target="_blank" rel="noopener">${escapeHtml(p.title)}</a> <span class="meta">▲${new Intl.NumberFormat().format(p.ups||p.score||0)}</span></li>`).join('');
-  }catch{ redditList.innerHTML = '<li class="dim">Error loading Reddit.</li>'; }
+    const r = await fetch('https://www.reddit.com/r/popular.json?limit=12');
+    const j = await r.json();
+    const ul = $('#redditList'); ul.innerHTML='';
+    j.data.children.forEach(p=>{
+      const {title, permalink, ups} = p.data;
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="https://www.reddit.com${permalink}" target="_blank" rel="noopener">${title}</a> <span class="dim">▲${ups.toLocaleString()}</span>`;
+      ul.appendChild(li);
+    });
+  }catch(e){ $('#redditList').innerHTML = '<li class="dim">Error loading Reddit.</li>'; }
 }
 
-// AI News (last 30 days)
-const AI_FEEDS=[
-  'https://ai.googleblog.com/feeds/posts/default?alt=rss',
-  'https://openai.com/blog/rss/',
-  'https://huggingface.co/blog/feed.xml',
-  'https://venturebeat.com/category/ai/feed/',
-  'https://www.theverge.com/artificial-intelligence/rss/index.xml',
-  'https://ai.facebook.com/blog/rss/'
+// Markets (Stooq keyless)
+async function loadMarkets(){
+  const map = { 'S&P 500':'spx', 'Dow 30':'dji', 'Nasdaq 100':'ndx' };
+  const grid = $('#marketsGrid'); grid.innerHTML='';
+  for (const [name,sym] of Object.entries(map)){
+    try{
+      const url = `https://stooq.com/q/l/?s=${sym}&f=sd2t2ohlcv&h&e=csv`;
+      const txt = await fetch(url).then(r=>r.text());
+      const [hdr, row] = txt.trim().split('\n');
+      const cols = row.split(',');
+      const close = parseFloat(cols[6]);
+      const open = parseFloat(cols[3]);
+      const chg = close - open; const pct = (chg/open*100);
+      const div = document.createElement('div'); div.className='ticker';
+      div.innerHTML = `<div class="name">${name}</div><div class="price">${close.toFixed(2)}</div><div class="chg ${chg>=0?'up':'down'}">${chg>=0?'+':''}${chg.toFixed(2)} (${pct.toFixed(2)}%)</div>`;
+      grid.appendChild(div);
+    }catch(e){
+      const div = document.createElement('div'); div.className='ticker';
+      div.innerHTML = `<div class="name">${name}</div><div class="dim">N/A</div>`;
+      grid.appendChild(div);
+    }
+  }
+}
+
+// Economy (Fed/BLS/BEA RSS)
+const econFeeds = [
+  'https://www.federalreserve.gov/feeds/press_all.xml',
+  'https://www.bls.gov/feed/news.rss',
+  'https://www.bea.gov/news/rss/all.xml'
 ];
-async function loadAINews(){
-  try{
-    let all=[];
-    for(const f of AI_FEEDS){ try{ all = all.concat(await fetchRSS(f)); }catch{} }
-    const cutoff=Date.now()-30*24*60*60*1000;
-    all = all.filter(i=>Date.parse(i.pubDate||'')>=cutoff);
-    all.sort((a,b)=>Date.parse(b.pubDate||0)-Date.parse(a.pubDate||0));
-    const seen=new Set(); const out=[];
-    for(const i of all){ if(!seen.has(i.link)){ seen.add(i.link); out.push(i);} }
-    aiList.innerHTML=out.slice(0,20).map(i=>{
-      const fav=faviconFor(i.link);
-      const host=(()=>{ try{return new URL(i.link).hostname.replace('www.','');}catch{return '';} })();
-      const when=i.pubDate?new Date(i.pubDate).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
-      return `<li class="item"><img class="favicon" src="${fav}" alt=""/><div><a href="${i.link}" target="_blank" rel="noopener">${escapeHtml(i.title)}</a><div class="meta">${host}${when?" • "+when:""}</div></div></li>`;
-    }).join('');
-  }catch{ aiList.innerHTML = '<li class="dim">Error loading feed.</li>'; }
+async function loadEconomy(){
+  const ul = $('#econList'); ul.innerHTML='';
+  for (const f of econFeeds){
+    try{
+      const xml = await rss(f);
+      const items = [...xml.querySelectorAll('item')].slice(0,3);
+      items.forEach(it=>{
+        const title = it.querySelector('title')?.textContent||'';
+        const link = it.querySelector('link')?.textContent||'#';
+        const src = new URL(link).hostname.replace('www.','');
+        const date = new Date(it.querySelector('pubDate')?.textContent||Date.now()).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${link}" target="_blank" rel="noopener">${title}</a><span class="dim">${src} • ${date}</span>`;
+        ul.appendChild(li);
+      });
+    }catch(e){
+      ul.insertAdjacentHTML('beforeend','<li class="dim">Error loading economy feed.</li>');
+    }
+  }
 }
 
-els.unitToggle.addEventListener('click',()=>{ STATE.unit=STATE.unit==="F"?"C":"F"; els.unitToggle.textContent=`°${STATE.unit}`; renderWeather(); });
-
-(async()=>{ await loadWeather(); await Promise.all([loadUSNews(),loadReddit(),loadAINews()]); setUpdated(); setInterval(async()=>{ await Promise.all([loadWeather(),loadUSNews(),loadReddit(),loadAINews()]); setUpdated(); }, 30*60*1000); })();
-
+// boot
+function init(){
+  setUpdated();
+  fetchWeather();
+  loadUSNews();
+  loadReddit();
+  loadTikTok();
+  loadMarkets();
+  loadEconomy();
+  setInterval(()=>{ setUpdated(); loadUSNews(); loadReddit(); loadTikTok(); loadMarkets(); loadEconomy(); fetchWeather(); }, 30*60*1000);
+}
+document.addEventListener('DOMContentLoaded', init);

@@ -1,15 +1,27 @@
-:root{--bg:#0e0f13;--card:#151821;--text:#e9ecf1;--muted:#9aa5b1;--border:#232634;--accent:#7aa2f7;--radius:12px;}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
-.app-header{position:sticky;top:0;background:#131824;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
-.controls .dim{color:var(--muted);font-size:12px}
-#unitToggle{border:1px solid var(--border);background:var(--card);border-radius:999px;color:var(--text);padding:6px 10px;cursor:pointer}
-.grid{display:grid;gap:16px;padding:16px;max-width:1100px;margin:0 auto;grid-template-columns:repeat(12,1fr)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-.card-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-#weather{grid-column:span 12}#localNews{grid-column:span 6}#reddit{grid-column:span 6}#aiNews{grid-column:span 12}
-@media(min-width:900px){#weather{grid-column:span 4}#localNews{grid-column:span 4}#reddit{grid-column:span 4}#aiNews{grid-column:span 12}}
-.weather-content{display:flex;gap:18px;align-items:center}.temp{font-size:56px;font-weight:700}.hi-lo{display:flex;gap:16px}.summary{margin-top:6px}
-.list{list-style:none;margin:0;padding:0;display:grid;gap:10px}.item{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
-.item .meta{font-size:12px;color:var(--muted)}.dim{color:var(--muted)}.favicon{width:18px;height:18px;border-radius:4px;border:1px solid var(--border)}
-.footer{padding:18px 16px;text-align:center;color:var(--muted);font-size:12px}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:#0f141a;color:#d6dde5;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+.app-header{display:flex;align-items:center;gap:28px;padding:20px 16px;background:#121821;position:sticky;top:0;z-index:10;box-shadow:0 2px 0 rgba(255,255,255,.03)}
+.app-header h1{font-size:32px;margin:0;white-space:nowrap}
+.app-header .controls{margin-left:auto;display:flex;align-items:center;gap:14px}
+#unitToggle{background:#1c2430;border:1px solid #273142;color:#e9f0f7;border-radius:999px;padding:8px 10px;cursor:pointer}
+.dim{color:#8da3b5}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:16px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.card{background:#121821;border:1px solid #273142;border-radius:14px;padding:16px}
+.card-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.card-header h2{margin:0;font-size:22px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.list li a{color:#b9d4ff;text-decoration:none}
+.list li .dim{display:block;margin-top:2px}
+.bullets li{position:relative;padding-left:16px}
+.bullets li:before{content:'•';position:absolute;left:0;top:0}
+.weather-content{display:flex;align-items:center;gap:16px}
+.temp{font-size:64px;font-weight:700}
+.hi-lo{display:flex;flex-direction:column;gap:6px}
+.footer{padding:26px;text-align:center}
+.markets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ticker{background:#0d131a;border:1px solid #273142;border-radius:10px;padding:10px}
+.ticker .name{color:#8da3b5;font-size:12px}
+.ticker .price{font-size:20px;font-weight:700}
+.ticker .chg{font-size:12px}
+.up{color:#8ef3a3}.down{color:#f39a8e}
+.ad-card{display:none;border-style:dashed;opacity:.8}
