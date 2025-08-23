@@ -1,13 +1,13 @@
 *{box-sizing:border-box}html,body{margin:0;padding:0;background:#0f141a;color:#d6dde5;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-.app-header{display:flex;align-items:center;gap:28px;padding:20px 16px;background:#121821;position:sticky;top:0;z-index:10;box-shadow:0 2px 0 rgba(255,255,255,.03)}
-.app-header h1{font-size:32px;margin:0;white-space:nowrap}
-.app-header .controls{margin-left:auto;display:flex;align-items:center;gap:14px}
+.app-header{display:flex;align-items:center;gap:28px;padding:20px 16px 18px 16px;background:#121821;position:sticky;top:0;z-index:10;box-shadow:0 2px 0 rgba(255,255,255,.03)}
+.app-header h1{font-size:32px;margin:0;white-space:nowrap;max-width:65vw;overflow:hidden;text-overflow:ellipsis}
+.app-header .controls{margin-left:auto;display:flex;align-items:center;gap:16px;padding-right:12px}
 #unitToggle{background:#1c2430;border:1px solid #273142;color:#e9f0f7;border-radius:999px;padding:8px 10px;cursor:pointer}
 .dim{color:#8da3b5}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:16px}
-@media(max-width:800px){.grid{grid-template-columns:1fr}}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.app-header h1{max-width:58vw}}
 .card{background:#121821;border:1px solid #273142;border-radius:14px;padding:16px}
-.card-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.card-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:12px}
 .card-header h2{margin:0;font-size:22px}
 .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 .list li a{color:#b9d4ff;text-decoration:none}
@@ -24,4 +24,8 @@
 .ticker .price{font-size:20px;font-weight:700}
 .ticker .chg{font-size:12px}
 .up{color:#8ef3a3}.down{color:#f39a8e}
+.media-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.media{display:flex;gap:10px;align-items:center;background:#0d131a;border:1px solid #273142;border-radius:10px;padding:8px}
+.media img{width:56px;height:56px;object-fit:cover;border-radius:8px;background:#0b1016}
+.media .title{font-size:14px;line-height:1.25}
 .ad-card{display:none;border-style:dashed;opacity:.8}
