@@ -1,79 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NewsAggregationPlus</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="topbar">
-    <h1 id="title">NewsAggregationPlus</h1>
-    <div class="right-cluster">
-      <button id="unitToggle" title="Toggle °F/°C">°F</button>
-      <div class="updated"><span>Updated</span><time id="updatedAt">—</time></div>
+    <h1 class="brand">NewsAggregationPlus</h1>
+    <div class="top-controls">
+      <button id="unitToggle" class="chip" aria-label="Toggle temperature units">°F</button>
+      <div class="updated"><span>Updated</span><time id="updatedTime">—</time></div>
     </div>
   </header>
 
-  <main class="grid">
-    <section class="card weather">
+  <main class="wrap">
+    <section class="card" id="weatherCard">
       <div class="card-head">
         <h2>Local Weather</h2>
-        <span id="where">Your area</span>
+        <div id="weatherLocation" class="muted">Your area</div>
       </div>
-      <div class="wx-row">
-        <div class="temp" id="temp">—°</div>
-        <div class="wx-minor">
-          <div>H: <span id="hi">—°</span></div>
-          <div>L: <span id="lo">—°</span></div>
-          <div>Winds <span id="wind">--</span></div>
+      <div class="weather-row">
+        <div class="temp-now"><span id="tempNow">--</span><span class="deg">°</span></div>
+        <div class="temp-more">
+          <div>H: <span id="tempHigh">--</span>°</div>
+          <div>L: <span id="tempLow">--</span>°</div>
+          <div>Winds <span id="windStr">--</span></div>
         </div>
       </div>
     </section>
 
-    <section class="card" id="usNews">
+    <section class="card" id="usNewsCard">
       <div class="card-head">
-        <h2>U.S. News</h2><span>United States</span>
+        <h2>U.S. News</h2>
+        <div class="muted">United States</div>
       </div>
       <ul id="usNewsList" class="list"></ul>
     </section>
 
-    <section class="card" id="reddit">
+    <section class="card" id="redditCard">
       <div class="card-head">
         <h2>Reddit — r/popular</h2>
-        <a class="open" target="_blank" rel="noopener" href="https://www.reddit.com/r/popular/">Open</a>
+        <a class="muted link" href="https://www.reddit.com/r/popular/" target="_blank" rel="noopener">Open</a>
       </div>
       <ul id="redditList" class="list"></ul>
     </section>
 
-    <section class="card" id="tiktok">
+    <section class="card" id="tiktokCard">
       <div class="card-head">
         <h2>TikTok — Trending</h2>
-        <a class="open" target="_blank" rel="noopener" href="https://www.tiktok.com/">Open</a>
+        <a class="muted link" href="https://www.tiktok.com/" target="_blank" rel="noopener">Open</a>
       </div>
       <ul id="tiktokList" class="list"></ul>
-      <div class="note small">Powered via proxied RSS (no account needed).</div>
     </section>
 
-    <section class="card markets">
+    <section class="card" id="marketsCard">
       <div class="card-head">
-        <h2>Markets</h2><span>Indexes</span>
+        <h2>Markets</h2>
+        <div class="muted">Indexes</div>
       </div>
-      <div class="markets-grid">
-        <div class="tile"><div class="label">S&amp;P 500 (SPY)</div><div class="value" id="sp500">N/A</div><div class="delta" id="sp500d">—</div></div>
-        <div class="tile"><div class="label">Dow 30 (DIA)</div><div class="value" id="dow">N/A</div><div class="delta" id="dowd">—</div></div>
-        <div class="tile"><div class="label">Nasdaq 100 (QQQ)</div><div class="value" id="nasdaq">N/A</div><div class="delta" id="nasdaqd">—</div></div>
+      <div class="grid3">
+        <div class="ticker" id="sp500">
+          <div class="name">S&amp;P 500</div>
+          <div class="price" data-for="SPY">N/A</div>
+          <div class="delta">—</div>
+        </div>
+        <div class="ticker" id="dow30">
+          <div class="name">Dow 30</div>
+          <div class="price" data-for="DIA">N/A</div>
+          <div class="delta">—</div>
+        </div>
+        <div class="ticker" id="nasdaq100">
+          <div class="name">Nasdaq 100</div>
+          <div class="price" data-for="QQQ">N/A</div>
+          <div class="delta">—</div>
+        </div>
       </div>
     </section>
 
-    <section class="card" id="economy">
+    <section class="card" id="economyCard">
       <div class="card-head">
-        <h2>U.S. Economy</h2><span>Latest releases</span>
+        <h2>U.S. Economy</h2>
+        <div class="muted">Latest releases</div>
       </div>
       <ul id="economyList" class="list"></ul>
     </section>
 
-    <section class="card" id="aiDev">
+    <section class="card" id="aiCard">
       <div class="card-head">
         <h2>AI Developments (Last 30 Days)</h2>
       </div>
@@ -81,11 +98,11 @@
     </section>
   </main>
 
-  <footer class="foot small">
-    Weather by Open‑Meteo. RSS via Vercel API route proxy. Markets via Stooq (using ETFs). Reddit via JSON. TikTok via RSS.
+  <footer class="foot">
+    Weather by Open‑Meteo. RSS via Vercel API route proxy. Markets via Stooq.
+    Reddit via JSON. TikTok via RSS (proxied).
   </footer>
 
-  <script src="rss.js"></script>
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

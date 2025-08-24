@@ -1,33 +1,25 @@
-function parseCSV(csv){
-  const [header, ...rows] = csv.trim().split(/\r?\n/);
-  const cols = header.split(',');
-  return rows.map(r=>{
-    const parts = r.split(',');
-    const obj = {};
-    cols.forEach((c,i)=>obj[c]=parts[i]);
-    return obj;
-  });
+function stooqUrl(t){ return `https://stooq.com/q/l/?s=${t.toLowerCase()}.us&f=sd2t2ohlcv&h&e=csv`; }
+
+async function quote(t){
+  const r = await fetch(stooqUrl(t));
+  const csv = await r.text();
+  const lines = csv.trim().split(/\r?\n/);
+  if(lines.length<2) return null;
+  const parts = lines[1].split(',');
+  const open = parseFloat(parts[3]); const close = parseFloat(parts[6]);
+  if(isNaN(open)||isNaN(close)) return null;
+  const change = close - open;
+  const changePct = open? (change/open*100) : 0;
+  return { ticker:t, price: close, change, changePct };
 }
-export default async function handler(req, res) {
+
+export default async function handler(req, res){
   try{
-    // Use ETFs as proxies for the indexes (free & reliable)
-    const url = 'https://stooq.com/q/l/?s=spy,dia,qqq&f=sd2t2ohlcv&h=e';
-    const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (+NewsAggregationPlus)' }});
-    const csv = await r.text();
-    const rows = parseCSV(csv);
+    const tickers = (req.query.tickers || 'SPY,DIA,QQQ').split(',').map(s=>s.trim().toUpperCase());
     const out = {};
-    for (const row of rows){
-      const sym = row.Symbol.toUpperCase();
-      const price = parseFloat(row.Close);
-      const open = parseFloat(row.Open);
-      const change = price - open;
-      const changePct = (change / open) * 100;
-      out[sym] = { price, change, changePct };
-    }
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Cache-Control','s-maxage=300, stale-while-revalidate=60');
-    res.status(200).json({ SPY: out['SPY'], DIA: out['DIA'], QQQ: out['QQQ'] });
+    await Promise.all(tickers.map(async t=>{ out[t] = await quote(t); }));
+    res.status(200).json(out);
   }catch(e){
-    res.status(200).json({});
+    res.status(500).json({error: e.message});
   }
 }
