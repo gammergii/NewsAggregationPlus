@@ -1,76 +1,25 @@
-/* NewsAggregationPlus styles */
-:root{
-  --bg:#0f1620;
-  --card:#151d28;
-  --text:#e7eefc;
-  --muted:#a8b3c7;
-  --accent:#86b7ff;
-  --good:#19c37d;
-  --bad:#ff5d5d;
-  --ring:#223147;
+
+/* style.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #111827;
+  color: #f9fafb;
+  margin: 0;
+  padding: 0;
 }
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-a{color:var(--accent); text-decoration:none}
-.wrap{max-width:1000px; margin:0 auto; padding:20px 16px}
-
-.topbar{
-  position:sticky; top:0;
-  display:flex; justify-content:space-between; align-items:center;
-  padding:18px 16px;
-  background:linear-gradient(0deg, rgba(15,22,32,0.95), rgba(15,22,32,0.98));
-  border-bottom:1px solid var(--ring);
-  z-index:10;
-}
-.brand{margin:0; font-size:28px; letter-spacing:.2px}
-.top-controls{display:flex; align-items:center; gap:12px}
-.chip{
-  background:#15253a; color:var(--text);
-  border:1px solid var(--ring);
-  border-radius:999px; padding:6px 10px; font-weight:700
-}
-.updated{display:flex; gap:6px; color:var(--muted)}
-
-.card{
-  background:var(--card); border:1px solid var(--ring);
-  border-radius:14px; padding:16px; margin:14px 0;
-  box-shadow:0 0 0 1px rgba(255,255,255,0.02) inset;
-}
-.card-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
-.card h2{margin:0}
-.muted{color:var(--muted)}
-.link{border:1px solid var(--ring); padding:6px 10px; border-radius:10px}
-
-.weather-row{display:flex; align-items:center; gap:18px}
-.temp-now{font-size:60px; font-weight:700; line-height:1}
-.deg{opacity:.8}
-.temp-more{display:flex; gap:14px; color:var(--muted); flex-wrap:wrap;}
-
-.list{list-style:none; padding:0; margin:0}
-.list li{margin:10px 0; line-height:1.35}
-.list a{color:#cfe1ff}
-.list small{color:var(--muted)}
-
-.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
-.ticker{border:1px solid var(--ring); border-radius:12px; padding:12px}
-.ticker .name{color:var(--muted); margin-bottom:4px}
-.ticker .price{font-size:22px; font-weight:700}
-.ticker .delta{font-size:14px; color:var(--muted)}
-
-.foot{
-  text-align:center; color:var(--muted);
-  padding:30px 16px 60px; font-size:14px
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
 }
 
-@media (max-width:720px){
-  .grid3{grid-template-columns:1fr}
-  .brand{font-size:24px}
-  .temp-now{font-size:56px}
-  .temp-more{gap:10px}
+header h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+header .unit-toggle {
+  margin-left: 10px;
 }
