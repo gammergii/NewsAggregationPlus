@@ -1,108 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NewsAggregationPlus</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topbar">
-    <h1 class="brand">NewsAggregationPlus</h1>
-    <div class="top-controls">
-      <button id="unitToggle" class="chip" aria-label="Toggle temperature units">°F</button>
-      <div class="updated"><span>Updated</span><time id="updatedTime">—</time></div>
+  <header class="site-header">
+    <div class="header-row">
+      <h1 class="app-title">NewsAggregationPlus</h1>
+      <button id="unitToggle" class="unit-toggle" aria-label="Toggle units">°F</button>
     </div>
   </header>
-
-  <main class="wrap">
-    <section class="card" id="weatherCard">
-      <div class="card-head">
-        <h2>Local Weather</h2>
-        <div id="weatherLocation" class="muted">Your area</div>
-      </div>
-      <div class="weather-row">
-        <div class="temp-now"><span id="tempNow">--</span><span class="deg">°</span></div>
-        <div class="temp-more">
-          <div>H: <span id="tempHigh">--</span>°</div>
-          <div>L: <span id="tempLow">--</span>°</div>
-          <div>Winds <span id="windStr">--</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="card" id="usNewsCard">
-      <div class="card-head">
-        <h2>U.S. News</h2>
-        <div class="muted">United States</div>
-      </div>
-      <ul id="usNewsList" class="list"></ul>
-    </section>
-
-    <section class="card" id="redditCard">
-      <div class="card-head">
-        <h2>Reddit — r/popular</h2>
-        <a class="muted link" href="https://www.reddit.com/r/popular/" target="_blank" rel="noopener">Open</a>
-      </div>
-      <ul id="redditList" class="list"></ul>
-    </section>
-
-    <section class="card" id="tiktokCard">
-      <div class="card-head">
-        <h2>TikTok — Trending</h2>
-        <a class="muted link" href="https://www.tiktok.com/" target="_blank" rel="noopener">Open</a>
-      </div>
-      <ul id="tiktokList" class="list"></ul>
-    </section>
-
-    <section class="card" id="marketsCard">
-      <div class="card-head">
-        <h2>Markets</h2>
-        <div class="muted">Indexes</div>
-      </div>
-      <div class="grid3">
-        <div class="ticker" id="sp500">
-          <div class="name">S&amp;P 500</div>
-          <div class="price" data-for="SPY">N/A</div>
-          <div class="delta">—</div>
-        </div>
-        <div class="ticker" id="dow30">
-          <div class="name">Dow 30</div>
-          <div class="price" data-for="DIA">N/A</div>
-          <div class="delta">—</div>
-        </div>
-        <div class="ticker" id="nasdaq100">
-          <div class="name">Nasdaq 100</div>
-          <div class="price" data-for="QQQ">N/A</div>
-          <div class="delta">—</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="card" id="economyCard">
-      <div class="card-head">
-        <h2>U.S. Economy</h2>
-        <div class="muted">Latest releases</div>
-      </div>
-      <ul id="economyList" class="list"></ul>
-    </section>
-
-    <section class="card" id="aiCard">
-      <div class="card-head">
-        <h2>AI Developments (Last 30 Days)</h2>
-      </div>
-      <ul id="aiList" class="list"></ul>
-    </section>
-  </main>
-
-  <footer class="foot">
-    Weather by Open‑Meteo. RSS via Vercel API route proxy. Markets via Stooq.
-    Reddit via JSON. TikTok via RSS (proxied).
-  </footer>
-
-  <script type="module" src="script.js"></script>
 </body>
 </html>
