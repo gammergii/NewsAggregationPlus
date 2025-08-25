@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+let currentWeatherData = null;        .header h1 {
+font-size: 3rem;
+font-weight: 700;
+margin-bottom: 15px;
+color: #ffffff;
+text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+letter-spacing: -0.02em;
+}<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -45,38 +52,6 @@
     .header {
         text-align: center;
         margin-bottom: 30px;
-    }
-
-    .header h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-        background: linear-gradient(45deg, #ffffff, #60a5fa, #3b82f6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.5);
-        letter-spacing: -0.02em;
-    }
-
-    .temp-toggle {
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 25px;
-        color: white;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        backdrop-filter: blur(20px);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-    }
-    
-    .temp-toggle:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: translateY(-2px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     }
 
     .section {
@@ -284,7 +259,6 @@
     <div class="container">
         <div class="header">
             <h1>NewsAggregationPlus</h1>
-            <button class="temp-toggle" onclick="toggleTemperature()">°F</button>
         </div>
 
 ```
@@ -327,26 +301,6 @@
 </div>
 
 <script>
-    let temperatureUnit = 'F';
-    let currentWeatherData = null;
-
-    // Toggle temperature unit
-    function toggleTemperature() {
-        temperatureUnit = temperatureUnit === 'F' ? 'C' : 'F';
-        document.querySelector('.temp-toggle').textContent = `°${temperatureUnit}`;
-        if (currentWeatherData) {
-            displayWeather(currentWeatherData);
-        }
-    }
-
-    // Convert temperature
-    function convertTemp(temp, unit) {
-        if (unit === 'C') {
-            return Math.round((temp - 32) * 5/9);
-        }
-        return Math.round(temp);
-    }
-
     // Get user location and weather
     async function getWeather() {
         try {
@@ -389,19 +343,15 @@
     }
 
     function displayWeather(data) {
-        const temp = convertTemp(data.temperature, temperatureUnit);
-        const high = convertTemp(data.high, temperatureUnit);
-        const low = convertTemp(data.low, temperatureUnit);
-        
         document.getElementById('weather-content').innerHTML = `
             <div class="weather-display">
-                <div class="temp-main">${temp}°</div>
+                <div class="temp-main">${data.temperature}°</div>
                 <div class="weather-details">
                     <div class="weather-item">
-                        <div>H: ${high}°</div>
+                        <div>H: ${data.high}°</div>
                     </div>
                     <div class="weather-item">
-                        <div>L: ${low}°</div>
+                        <div>L: ${data.low}°</div>
                     </div>
                     <div class="weather-item">
                         <div>Winds ${data.windSpeed}</div>
