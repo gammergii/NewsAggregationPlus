@@ -14,7 +14,7 @@
 
 ```
     body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
         background-attachment: fixed;
         color: #ffffff;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -30,9 +30,9 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                    radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+        background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(147, 197, 253, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 80%, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
         z-index: -1;
         pointer-events: none;
     }
@@ -51,11 +51,11 @@
         font-size: 3rem;
         font-weight: 700;
         margin-bottom: 15px;
-        background: linear-gradient(45deg, #ffffff, #f0f9ff, #e0f2fe);
+        background: linear-gradient(45deg, #ffffff, #60a5fa, #3b82f6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        text-shadow: 0 4px 8px rgba(0,0,0,0.5);
         letter-spacing: -0.02em;
     }
 
@@ -80,13 +80,13 @@
     }
 
     .section {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(59, 130, 246, 0.3);
         border-radius: 20px;
         margin-bottom: 25px;
         padding: 25px;
         backdrop-filter: blur(20px);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -99,23 +99,21 @@
         left: 0;
         right: 0;
         height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.8), transparent);
     }
     
     .section:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 45px rgba(0,0,0,0.15);
-        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+        background: rgba(15, 23, 42, 0.9);
+        border-color: rgba(59, 130, 246, 0.5);
     }
 
     .section-title {
         font-size: 1.6rem;
         font-weight: 600;
         margin-bottom: 20px;
-        background: linear-gradient(45deg, #ffffff, #e0f2fe);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #ffffff;
         position: relative;
     }
     
@@ -126,7 +124,7 @@
         left: 0;
         width: 50px;
         height: 3px;
-        background: linear-gradient(90deg, #60a5fa, #3b82f6);
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
         border-radius: 2px;
     }
 
@@ -139,11 +137,8 @@
         font-size: 5rem;
         font-weight: 100;
         margin: 15px 0;
-        background: linear-gradient(45deg, #ffffff, #f0f9ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        color: #ffffff;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.5);
     }
 
     .weather-details {
@@ -155,46 +150,48 @@
 
     .weather-item {
         font-size: 1rem;
-        opacity: 0.9;
+        color: #e2e8f0;
         padding: 10px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.6);
         border-radius: 10px;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.2);
     }
 
     .news-item, .reddit-item {
         padding: 15px;
         margin-bottom: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.2);
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(15, 23, 42, 0.6);
         backdrop-filter: blur(10px);
+        color: #f1f5f9;
     }
 
     .news-item:hover, .reddit-item:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(15, 23, 42, 0.8);
         transform: translateX(5px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 5px 20px rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
     }
 
     .news-source {
         font-size: 0.8rem;
-        opacity: 0.6;
+        color: #94a3b8;
         margin-top: 5px;
     }
 
     .reddit-meta {
         font-size: 0.8rem;
-        opacity: 0.6;
+        color: #94a3b8;
         margin-top: 5px;
     }
 
     .loading {
         text-align: center;
-        opacity: 0.6;
+        color: #94a3b8;
         padding: 20px;
     }
 
@@ -215,22 +212,24 @@
     .market-item {
         text-align: center;
         padding: 20px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.7);
         border-radius: 15px;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.3);
         transition: all 0.3s ease;
+        color: #f1f5f9;
     }
     
     .market-item:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(15, 23, 42, 0.9);
         transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.5);
     }
 
     .market-name {
         font-size: 0.9rem;
-        opacity: 0.8;
+        color: #cbd5e1;
         margin-bottom: 5px;
     }
 
