@@ -10,13 +10,76 @@
   <header class="site-header">
     <div class="header-row">
       <h1 class="app-title">NewsAggregationPlus</h1>
+      <!-- Toggle between Fahrenheit and Celsius -->
       <button id="unitToggle" class="unit-toggle" aria-label="Toggle units">°F</button>
     </div>
   </header>
 
-  <!-- All your sections (weather, news, reddit, TikTok, markets, etc.) go here -->
+  <main class="content-wrapper">
+    <!-- Local weather section -->
+    <section class="card" id="localWeatherSection">
+      <h2>Local Weather</h2>
+      <div id="weatherCard" class="weather-card">
+        <div class="weather-temp">
+          <span id="weatherTemp">--</span>
+        </div>
+        <div class="weather-meta">
+          <div>H: <span id="weatherHigh">--</span></div>
+          <div>L: <span id="weatherLow">--</span></div>
+          <div>Winds <span id="weatherWinds">--</span></div>
+        </div>
+      </div>
+    </section>
 
-  <!-- Scripts should be loaded right before closing body -->
+    <!-- U.S. News section -->
+    <section class="card">
+      <h2>U.S. News</h2>
+      <ul id="usNewsList" class="card-list"></ul>
+    </section>
+
+    <!-- Reddit popular posts -->
+    <section class="card">
+      <h2>Reddit — r/popular</h2>
+      <ul id="redditList" class="card-list"></ul>
+    </section>
+
+    <!-- TikTok trending -->
+    <section class="card">
+      <h2>TikTok — Trending</h2>
+      <ul id="tiktokList" class="card-list"></ul>
+    </section>
+
+    <!-- Markets section -->
+    <section class="card">
+      <h2>Markets</h2>
+      <div class="markets-grid">
+        <div class="market-item">
+          <div class="label">S&amp;P 500</div>
+          <div id="sp500Value" class="value">N/A</div>
+        </div>
+        <div class="market-item">
+          <div class="label">Dow 30</div>
+          <div id="dow30Value" class="value">N/A</div>
+        </div>
+        <div class="market-item">
+          <div class="label">Nasdaq 100</div>
+          <div id="nasdaqValue" class="value">N/A</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- U.S. economy releases -->
+    <section class="card">
+      <h2>U.S. Economy</h2>
+      <ul id="economyList" class="card-list"></ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Weather by Open‑Meteo. Markets via Stooq. News/Reddit/TikTok/Economy via RSS proxies.</p>
+  </footer>
+
+  <!-- Load the application script -->
   <script src="script.js" defer></script>
 </body>
 </html>
