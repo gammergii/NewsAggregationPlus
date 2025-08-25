@@ -1,552 +1,309 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NewsAggregationPlus</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NewsAggregationPlus</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { color-scheme: dark; }
 
-```
     body {
-        background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
-        color: #ffffff;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        min-height: 100vh;
-        padding: 20px;
+      background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+      color: #ffffff; /* everything inherits from here */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
     }
 
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
+    /* ensure links are white too */
+    a, a:visited { color: #ffffff; }
+    a:hover { color: #e2e8f0; }
 
-    .header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
+    .container { max-width: 800px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 30px; }
     .header h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        color: #ffffff;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      font-size: 3rem; font-weight: 700; color: #ffffff;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.5);
     }
 
     .section {
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        border-radius: 20px;
-        margin-bottom: 25px;
-        padding: 25px;
-        backdrop-filter: blur(20px);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 20px;
+      margin-bottom: 25px; padding: 25px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
 
     .section-title {
-        font-size: 1.6rem;
-        font-weight: 600;
-        margin-bottom: 20px;
-        color: #ffffff;
-        border-bottom: 3px solid #3b82f6;
-        padding-bottom: 8px;
-        display: inline-block;
+      font-size: 1.6rem; font-weight: 600; margin-bottom: 20px;
+      color: #ffffff; border-bottom: 3px solid #3b82f6; padding-bottom: 8px;
+      display: inline-block;
     }
 
-    .weather-display {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
+    .weather-display { text-align: center; margin-bottom: 20px; }
     .temp-main {
-        font-size: 5rem;
-        font-weight: 100;
-        margin: 15px 0;
-        color: #ffffff;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      font-size: 5rem; font-weight: 100; margin: 15px 0; color: #ffffff;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.5);
     }
 
     .weather-details {
-        display: flex;
-        justify-content: space-between;
-        text-align: center;
-        margin-top: 15px;
-        gap: 10px;
+      display: flex; justify-content: space-between; text-align: center;
+      margin-top: 15px; gap: 10px;
     }
-
     .weather-item {
-        font-size: 1rem;
-        color: #e2e8f0;
-        padding: 10px;
-        background: rgba(15, 23, 42, 0.6);
-        border-radius: 10px;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        flex: 1;
+      font-size: 1rem; color: #e2e8f0; padding: 10px;
+      background: rgba(15,23,42,0.6); border-radius: 10px;
+      border: 1px solid rgba(59,130,246,0.2); flex: 1;
     }
 
     .news-item, .reddit-item {
-        padding: 15px;
-        margin-bottom: 10px;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        background: rgba(15, 23, 42, 0.6);
-        color: #f1f5f9;
+      padding: 15px; margin-bottom: 10px;
+      border: 1px solid rgba(59,130,246,0.2); border-radius: 12px;
+      cursor: pointer; transition: all 0.3s ease;
+      background: rgba(15,23,42,0.6); color: #f1f5f9;
     }
-
     .news-item:hover, .reddit-item:hover {
-        background: rgba(15, 23, 42, 0.8);
-        transform: translateX(5px);
-        box-shadow: 0 5px 20px rgba(59, 130, 246, 0.2);
-        border-color: rgba(59, 130, 246, 0.4);
+      background: rgba(15,23,42,0.8); transform: translateX(5px);
+      box-shadow: 0 5px 20px rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.4);
     }
 
-    .news-source {
-        font-size: 0.8rem;
-        color: #94a3b8;
-        margin-top: 5px;
-    }
+    .news-source, .reddit-meta { font-size: 0.8rem; color: #94a3b8; margin-top: 5px; }
+    .loading { text-align: center; color: #94a3b8; padding: 20px; }
 
-    .reddit-meta {
-        font-size: 0.8rem;
-        color: #94a3b8;
-        margin-top: 5px;
-    }
-
-    .loading {
-        text-align: center;
-        color: #94a3b8;
-        padding: 20px;
-    }
-
-    .markets-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-
-    .markets-extended {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        margin-top: 20px;
-    }
+    .markets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+    .markets-extended { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
 
     .market-item {
-        text-align: center;
-        padding: 20px;
-        background: rgba(15, 23, 42, 0.7);
-        border-radius: 15px;
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        transition: all 0.3s ease;
-        color: #f1f5f9;
+      text-align: center; padding: 20px; background: rgba(15,23,42,0.7);
+      border-radius: 15px; border: 1px solid rgba(59,130,246,0.3);
+      transition: all 0.3s ease; color: #f1f5f9;
     }
-    
     .market-item:hover {
-        background: rgba(15, 23, 42, 0.9);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
-        border-color: rgba(59, 130, 246, 0.5);
+      background: rgba(15,23,42,0.9); transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.5);
     }
-
-    .market-name {
-        font-size: 0.9rem;
-        color: #cbd5e1;
-        margin-bottom: 5px;
-    }
-
-    .market-price {
-        font-size: 1.6rem;
-        font-weight: 600;
-        margin: 8px 0;
-    }
-
-    .market-change {
-        font-size: 0.8rem;
-        margin-top: 2px;
-    }
-
-    .positive {
-        color: #4ade80;
-    }
-
-    .negative {
-        color: #f87171;
-    }
+    .market-name { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 5px; }
+    .market-price { font-size: 1.6rem; font-weight: 600; margin: 8px 0; }
+    .market-change { font-size: 0.8rem; margin-top: 2px; }
+    .positive { color: #4ade80; }
+    .negative { color: #f87171; }
 
     @media (max-width: 600px) {
-        .header h1 {
-            font-size: 2rem;
-        }
-        
-        .weather-details {
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .markets-grid {
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        
-        .markets-extended {
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
+      .header h1 { font-size: 2rem; }
+      .weather-details { flex-direction: column; gap: 10px; }
+      .markets-grid { grid-template-columns: 1fr; gap: 15px; }
+      .markets-extended { grid-template-columns: 1fr; gap: 10px; }
     }
-</style>
-```
-
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>NewsAggregationPlus</h1>
-        </div>
+  <div class="container">
+    <div class="header"><h1>NewsAggregationPlus</h1></div>
 
-```
     <div class="section">
-        <h2 class="section-title">Local Weather</h2>
-        <div id="weather-content">
-            <div class="loading">Loading weather...</div>
-        </div>
+      <h2 class="section-title">Local Weather</h2>
+      <div id="weather-content"><div class="loading">Loading weather...</div></div>
     </div>
 
     <div class="section">
-        <h2 class="section-title">U.S. News</h2>
-        <div id="news-content">
-            <div class="loading">Loading news...</div>
-        </div>
+      <h2 class="section-title">U.S. News</h2>
+      <div id="news-content"><div class="loading">Loading news...</div></div>
     </div>
 
     <div class="section">
-        <h2 class="section-title">Reddit — r/popular</h2>
-        <div id="reddit-content">
-            <div class="loading">Loading Reddit posts...</div>
-        </div>
+      <h2 class="section-title">Reddit — r/popular</h2>
+      <div id="reddit-content"><div class="loading">Loading Reddit posts...</div></div>
     </div>
 
     <div class="section">
-        <h2 class="section-title">Markets</h2>
-        <div id="markets-content">
-            <div class="loading">Loading market data...</div>
-        </div>
+      <h2 class="section-title">Markets</h2>
+      <div id="markets-content"><div class="loading">Loading market data...</div></div>
     </div>
 
     <div class="section">
-        <h2 class="section-title">U.S. Economy</h2>
-        <div id="economy-content">
-            <div class="loading">Loading economic news...</div>
-        </div>
+      <h2 class="section-title">U.S. Economy</h2>
+      <div id="economy-content"><div class="loading">Loading economic news...</div></div>
     </div>
-</div>
+  </div>
 
-<script>
+  <script>
     let currentWeatherData = null;
 
-    // Get user location and weather
     async function getWeather() {
-        try {
-            const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject);
-            });
-            
-            const { latitude, longitude } = position.coords;
-            
-            const response = await fetch(`https://api.weather.gov/points/${latitude},${longitude}`);
-            const locationData = await response.json();
-            
-            const forecastResponse = await fetch(locationData.properties.forecast);
-            const forecastData = await forecastResponse.json();
-            
-            const currentPeriod = forecastData.properties.periods[0];
-            
-            currentWeatherData = {
-                temperature: currentPeriod.temperature,
-                high: currentPeriod.temperature,
-                low: currentPeriod.temperature - 10,
-                windSpeed: currentPeriod.windSpeed,
-                description: currentPeriod.shortForecast
-            };
-            
-            displayWeather(currentWeatherData);
-        } catch (error) {
-            currentWeatherData = {
-                temperature: 88,
-                high: 88,
-                low: 88,
-                windSpeed: '4 mph',
-                description: 'Partly Cloudy'
-            };
-            displayWeather(currentWeatherData);
-        }
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+        const { latitude, longitude } = position.coords;
+
+        const response = await fetch(`https://api.weather.gov/points/${latitude},${longitude}`);
+        const locationData = await response.json();
+
+        const forecastResponse = await fetch(locationData.properties.forecast);
+        const forecastData = await forecastResponse.json();
+
+        const currentPeriod = forecastData.properties.periods[0];
+
+        currentWeatherData = {
+          temperature: currentPeriod.temperature,
+          high: currentPeriod.temperature,
+          low: currentPeriod.temperature - 10,
+          windSpeed: currentPeriod.windSpeed,
+          description: currentPeriod.shortForecast
+        };
+
+        displayWeather(currentWeatherData);
+      } catch (error) {
+        currentWeatherData = {
+          temperature: 88, high: 88, low: 78,
+          windSpeed: '4 mph', description: 'Partly Cloudy'
+        };
+        displayWeather(currentWeatherData);
+      }
     }
 
     function displayWeather(data) {
-        document.getElementById('weather-content').innerHTML = `
-            <div class="weather-display">
-                <div class="temp-main">${data.temperature}°</div>
-                <div class="weather-details">
-                    <div class="weather-item">
-                        <div>H: ${data.high}°</div>
-                    </div>
-                    <div class="weather-item">
-                        <div>L: ${data.low}°</div>
-                    </div>
-                    <div class="weather-item">
-                        <div>Winds ${data.windSpeed}</div>
-                    </div>
-                </div>
-            </div>
-        `;
+      document.getElementById('weather-content').innerHTML = `
+        <div class="weather-display">
+          <div class="temp-main">${data.temperature}°</div>
+          <div class="weather-details">
+            <div class="weather-item"><div>H: ${data.high}°</div></div>
+            <div class="weather-item"><div>L: ${data.low}°</div></div>
+            <div class="weather-item"><div>Winds ${data.windSpeed}</div></div>
+          </div>
+        </div>`;
     }
 
-    // Fetch news
     async function getNews() {
-        try {
-            const newsItems = [
-                {
-                    title: "Chicago leaders denounce Pentagon plans for military deployment in city",
-                    source: "The Washington Post"
-                },
-                {
-                    title: "Trump's redistricting push could bring decades of Republican rule to the US House",
-                    source: "Reuters"
-                },
-                {
-                    title: "Russia \"made significant concessions\" to Trump on Ukraine talks, Vance says",
-                    source: "Axios"
-                },
-                {
-                    title: "National Guard troops in D.C. to begin carrying firearms",
-                    source: "NBC News"
-                },
-                {
-                    title: "Appellate ruling on Trump's $500M fine may not be last word on fraud case",
-                    source: "New York Post"
-                },
-                {
-                    title: "Jeffries hints at more Democratic redistricting if GOP presses on",
-                    source: "Politico"
-                }
-            ];
-
-            let newsHTML = '';
-            newsItems.forEach(item => {
-                newsHTML += `
-                    <div class="news-item">
-                        <div>${item.title}</div>
-                        <div class="news-source">${item.source}</div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('news-content').innerHTML = newsHTML;
-        } catch (error) {
-            document.getElementById('news-content').innerHTML = '<div class="loading">Error loading news</div>';
-        }
+      try {
+        const newsItems = [
+          { title: "Chicago leaders denounce Pentagon plans for military deployment in city", source: "The Washington Post" },
+          { title: "Trump's redistricting push could bring decades of Republican rule to the US House", source: "Reuters" },
+          { title: "Russia \"made significant concessions\" to Trump on Ukraine talks, Vance says", source: "Axios" },
+          { title: "National Guard troops in D.C. to begin carrying firearms", source: "NBC News" },
+          { title: "Appellate ruling on Trump's $500M fine may not be last word on fraud case", source: "New York Post" },
+          { title: "Jeffries hints at more Democratic redistricting if GOP presses on", source: "Politico" }
+        ];
+        document.getElementById('news-content').innerHTML =
+          newsItems.map(i => `
+            <div class="news-item">
+              <div>${i.title}</div>
+              <div class="news-source">${i.source}</div>
+            </div>`).join('');
+      } catch {
+        document.getElementById('news-content').innerHTML = '<div class="loading">Error loading news</div>';
+      }
     }
 
-    // Fetch Reddit posts
     async function getRedditPosts() {
-        try {
-            const redditPosts = [
-                {
-                    title: "Adopted this old guy today",
-                    score: 17210
-                },
-                {
-                    title: "National Guard to be mobilized in 19 states by the Trump Administration:",
-                    score: 52584
-                },
-                {
-                    title: "Marcy Borders, a 28-year-old Bank of America employee in the World Trade Center, survived the 9/11 attacks. A haunting photograph showed her covered in dust after the collapse. Widely remembered as 'The Dust Lady,' Borders passed away from cancer exactly 10 years ago today, on August 24, 2015.",
-                    score: 22118
-                },
-                {
-                    title: "United States President Donald Trump in bed posing for a bathrobe photoshoot",
-                    score: 10100
-                },
-                {
-                    title: "Kamala and Hillary predicted everything the Fondling Father would do",
-                    score: 25349
-                },
-                {
-                    title: "This is why you don't let employees borrow equipment",
-                    score: 8782
-                },
-                {
-                    title: "Hey /r/movies, I'm Stephen King! Ask me anything about The Long Walk book or movie.",
-                    score: 37218
-                },
-                {
-                    title: "Donald Trump has 6-8 months to live': Viral video sparks health rumours about US president as he has congestive heart failure and CKD",
-                    score: 28572
-                }
-            ];
-
-            let redditHTML = '';
-            redditPosts.forEach(post => {
-                redditHTML += `
-                    <div class="reddit-item">
-                        <div>${post.title}</div>
-                        <div class="reddit-meta">▲${post.score.toLocaleString()}</div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('reddit-content').innerHTML = redditHTML;
-        } catch (error) {
-            document.getElementById('reddit-content').innerHTML = '<div class="loading">Error loading Reddit posts</div>';
-        }
+      try {
+        const redditPosts = [
+          { title: "Adopted this old guy today", score: 17210 },
+          { title: "National Guard to be mobilized in 19 states by the Trump Administration:", score: 52584 },
+          { title: "Marcy Borders… passed away from cancer exactly 10 years ago today, on August 24, 2015.", score: 22118 },
+          { title: "United States President Donald Trump in bed posing for a bathrobe photoshoot", score: 10100 },
+          { title: "Kamala and Hillary predicted everything the Fondling Father would do", score: 25349 },
+          { title: "This is why you don't let employees borrow equipment", score: 8782 },
+          { title: "Hey /r/movies, I'm Stephen King! Ask me anything about The Long Walk book or movie.", score: 37218 },
+          { title: "‘Donald Trump has 6-8 months to live’…", score: 28572 }
+        ];
+        document.getElementById('reddit-content').innerHTML =
+          redditPosts.map(p => `
+            <div class="reddit-item">
+              <div>${p.title}</div>
+              <div class="reddit-meta">▲${p.score.toLocaleString()}</div>
+            </div>`).join('');
+      } catch {
+        document.getElementById('reddit-content').innerHTML = '<div class="loading">Error loading Reddit posts</div>';
+      }
     }
 
-    // Fetch market data
     async function getMarketData() {
-        try {
-            const majorMarkets = [
-                { name: 'S&P 500', price: '5,634.61', change: '+0.42%', positive: true },
-                { name: 'Dow 30', price: '41,240.52', change: '+0.14%', positive: true },
-                { name: 'Nasdaq 100', price: '19,619.33', change: '+0.51%', positive: true }
-            ];
+      try {
+        const majorMarkets = [
+          { name: 'S&P 500', price: '5,634.61', change: '+0.42%', positive: true },
+          { name: 'Dow 30', price: '41,240.52', change: '+0.14%', positive: true },
+          { name: 'Nasdaq 100', price: '19,619.33', change: '+0.51%', positive: true }
+        ];
+        const additionalMarkets = [
+          { name: 'Russell 2000', price: '2,231.15', change: '-0.23%', positive: false },
+          { name: 'VIX', price: '14.82', change: '-2.11%', positive: false },
+          { name: 'Gold', price: '$2,387.40', change: '+0.78%', positive: true },
+          { name: 'Crude Oil', price: '$77.42', change: '+1.23%', positive: true },
+          { name: 'Bitcoin', price: '$63,284', change: '+2.45%', positive: true },
+          { name: 'EUR/USD', price: '1.0847', change: '-0.12%', positive: false },
+          { name: '10Y Treasury', price: '4.247%', change: '+0.03%', positive: true },
+          { name: 'FTSE 100', price: '8,127.92', change: '+0.31%', positive: true },
+          { name: 'Nikkei 225', price: '38,211.01', change: '-0.67%', positive: false }
+        ];
 
-            const additionalMarkets = [
-                { name: 'Russell 2000', price: '2,231.15', change: '-0.23%', positive: false },
-                { name: 'VIX', price: '14.82', change: '-2.11%', positive: false },
-                { name: 'Gold', price: '$2,387.40', change: '+0.78%', positive: true },
-                { name: 'Crude Oil', price: '$77.42', change: '+1.23%', positive: true },
-                { name: 'Bitcoin', price: '$63,284', change: '+2.45%', positive: true },
-                { name: 'EUR/USD', price: '1.0847', change: '-0.12%', positive: false },
-                { name: '10Y Treasury', price: '4.247%', change: '+0.03%', positive: true },
-                { name: 'FTSE 100', price: '8,127.92', change: '+0.31%', positive: true },
-                { name: 'Nikkei 225', price: '38,211.01', change: '-0.67%', positive: false }
-            ];
+        let html = '<div class="markets-grid">' +
+          majorMarkets.map(m => `
+            <div class="market-item">
+              <div class="market-name">${m.name}</div>
+              <div class="market-price">${m.price}</div>
+              <div class="market-change ${m.positive ? 'positive' : 'negative'}">${m.change}</div>
+            </div>`).join('') +
+          '</div>';
 
-            let marketsHTML = '<div class="markets-grid">';
-            majorMarkets.forEach(market => {
-                marketsHTML += `
-                    <div class="market-item">
-                        <div class="market-name">${market.name}</div>
-                        <div class="market-price">${market.price}</div>
-                        <div class="market-change ${market.positive ? 'positive' : 'negative'}">${market.change}</div>
-                    </div>
-                `;
-            });
-            marketsHTML += '</div>';
+        html += '<div class="markets-extended">' +
+          additionalMarkets.map(m => `
+            <div class="market-item">
+              <div class="market-name">${m.name}</div>
+              <div class="market-price">${m.price}</div>
+              <div class="market-change ${m.positive ? 'positive' : 'negative'}">${m.change}</div>
+            </div>`).join('') +
+          '</div>';
 
-            marketsHTML += '<div class="markets-extended">';
-            additionalMarkets.forEach(market => {
-                marketsHTML += `
-                    <div class="market-item">
-                        <div class="market-name">${market.name}</div>
-                        <div class="market-price">${market.price}</div>
-                        <div class="market-change ${market.positive ? 'positive' : 'negative'}">${market.change}</div>
-                    </div>
-                `;
-            });
-            marketsHTML += '</div>';
-
-            document.getElementById('markets-content').innerHTML = marketsHTML;
-        } catch (error) {
-            document.getElementById('markets-content').innerHTML = '<div class="loading">Error loading market data</div>';
-        }
+        document.getElementById('markets-content').innerHTML = html;
+      } catch {
+        document.getElementById('markets-content').innerHTML = '<div class="loading">Error loading market data</div>';
+      }
     }
 
-    // Fetch economy news
     async function getEconomyNews() {
-        try {
-            const economyNews = [
-                {
-                    title: "Federal Open Market Committee announces approval of updates to its Statement on Longer-Run Goals and Monetary Policy Strategy",
-                    source: "Federal Reserve"
-                },
-                {
-                    title: "Minutes of the Federal Open Market Committee, July 29–30, 2025",
-                    source: "Federal Reserve"
-                },
-                {
-                    title: "Federal Reserve Board issues enforcement action with former employee of Regions Bank",
-                    source: "Federal Reserve Board"
-                },
-                {
-                    title: "U.S. GDP growth shows resilience in third quarter amid global economic uncertainties",
-                    source: "Bureau of Economic Analysis"
-                },
-                {
-                    title: "Labor Department reports unemployment rate holds steady at multi-decade lows",
-                    source: "Department of Labor"
-                },
-                {
-                    title: "Treasury announces new measures to strengthen supply chain financing mechanisms",
-                    source: "U.S. Treasury"
-                },
-                {
-                    title: "Consumer Price Index shows moderated inflation trends across major metropolitan areas",
-                    source: "Bureau of Labor Statistics"
-                },
-                {
-                    title: "Small Business Administration launches expanded lending programs for emerging technologies",
-                    source: "SBA"
-                },
-                {
-                    title: "Federal Trade Commission reviews merger activity impact on market concentration",
-                    source: "FTC"
-                },
-                {
-                    title: "Commerce Department highlights manufacturing sector growth in key industrial states",
-                    source: "Department of Commerce"
-                },
-                {
-                    title: "Energy Information Administration reports strategic petroleum reserve management updates",
-                    source: "EIA"
-                },
-                {
-                    title: "Congressional Budget Office releases updated fiscal projections for next decade",
-                    source: "CBO"
-                }
-            ];
-
-            let economyHTML = '';
-            economyNews.forEach(item => {
-                economyHTML += `
-                    <div class="news-item">
-                        <div>${item.title}</div>
-                        <div class="news-source">${item.source}</div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('economy-content').innerHTML = economyHTML;
-        } catch (error) {
-            document.getElementById('economy-content').innerHTML = '<div class="loading">Error loading economy news</div>';
-        }
+      try {
+        const economyNews = [
+          { title: "Federal Open Market Committee announces approval of updates to its Statement on Longer-Run Goals and Monetary Policy Strategy", source: "Federal Reserve" },
+          { title: "Minutes of the Federal Open Market Committee, July 29–30, 2025", source: "Federal Reserve" },
+          { title: "Federal Reserve Board issues enforcement action with former employee of Regions Bank", source: "Federal Reserve Board" },
+          { title: "U.S. GDP growth shows resilience in third quarter amid global economic uncertainties", source: "Bureau of Economic Analysis" },
+          { title: "Labor Department reports unemployment rate holds steady at multi-decade lows", source: "Department of Labor" },
+          { title: "Treasury announces new measures to strengthen supply chain financing mechanisms", source: "U.S. Treasury" },
+          { title: "Consumer Price Index shows moderated inflation trends across major metropolitan areas", source: "Bureau of Labor Statistics" },
+          { title: "Small Business Administration launches expanded lending programs for emerging technologies", source: "SBA" },
+          { title: "Federal Trade Commission reviews merger activity impact on market concentration", source: "FTC" },
+          { title: "Commerce Department highlights manufacturing sector growth in key industrial states", source: "Department of Commerce" },
+          { title: "Energy Information Administration reports strategic petroleum reserve management updates", source: "EIA" },
+          { title: "Congressional Budget Office releases updated fiscal projections for next decade", source: "CBO" }
+        ];
+        document.getElementById('economy-content').innerHTML =
+          economyNews.map(i => `
+            <div class="news-item">
+              <div>${i.title}</div>
+              <div class="news-source">${i.source}</div>
+            </div>`).join('');
+      } catch {
+        document.getElementById('economy-content').innerHTML = '<div class="loading">Error loading economy news</div>';
+      }
     }
 
-    // Initialize the app
-    document.addEventListener('DOMContentLoaded', function() {
-        getWeather();
-        getNews();
-        getRedditPosts();
-        getMarketData();
-        getEconomyNews();
+    document.addEventListener('DOMContentLoaded', () => {
+      getWeather();
+      getNews();
+      getRedditPosts();
+      getMarketData();
+      getEconomyNews();
     });
 
-    // Refresh content every 5 minutes
     setInterval(() => {
-        getNews();
-        getRedditPosts();
-        getMarketData();
-        getEconomyNews();
+      getNews();
+      getRedditPosts();
+      getMarketData();
+      getEconomyNews();
     }, 300000);
-</script>
-```
-
+  </script>
 </body>
 </html>
